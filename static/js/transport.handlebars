@@ -1,0 +1,22 @@
+<script type="x-handlebars-template">
+{{#each}}
+    <tr class="transport" id={{ this.id }}>
+        <td>{{ this.start }}</td>
+        <td>{{ this.end }}</td>
+        <td>{{ this.distance }} ft</td>
+        <td>{{ this.duration }} mins</td>
+        <td>
+            <select>
+                <option value="none"></option>
+                <option value="subway">Subway</option>
+                <option value="train">Train</option>
+                <option value="car">Car</option>
+                <option value="airplane">Airplane</option>
+            </select>
+        </td>
+        <td>
+            <input class="activator" type="checkbox"/>
+        </td>
+    </tr>
+{{/each}}
+</script>

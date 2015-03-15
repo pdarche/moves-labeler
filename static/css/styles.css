@@ -1,0 +1,42 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+#container {
+    display: flex;
+    flex-flow:row wrap;
+    justify-content: flex-end;
+    height: 100vh;
+    margin:0px;
+    width: 100%;
+}
+
+.item {
+    height: 100%;
+    margin: 0px;
+    flex-grow: 1;
+}
+
+#map {
+    width: 39%;
+}
+
+#transport_list {
+    overflow-y: scroll;
+    padding: 2px;
+    width: 45%;
+}
+
+#transport_list td {
+    color: #ccc;
+    font-family: 'Arial';
+    margin: 2px;
+    padding: 10px;
+    text-align: center;
+}
+
+#transport_list .hovering td, #transport_list .active td {
+    color: black;
+    cursor:pointer;
+}

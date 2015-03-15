@@ -1,0 +1,34 @@
+<script type="x-handlebars-template" id="list_tempate">
+    <table id="transport_table">
+        <tr>
+            <th>Start Date</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Distance</th>
+            <th>Duration</th>
+            <th>Type</th>
+        </tr>
+        {{#each transports}}
+        <tr class="transport" id={{ this.id }}>
+            <td>{{ this.date }}</td>
+            <td>{{ this.start }}</td>
+            <td>{{ this.end }}</td>
+            <td>{{ this.distance }} ft</td>
+            <td>{{ this.duration }} mins</td>
+            <td>
+                <select class="type">
+                    <option value=""></option>
+                    <option value="bike">Bike</option>
+                    <option value="subway">Subway</option>
+                    <option value="train">Train</option>
+                    <option value="car">Car</option>
+                    <option value="airplane">Airplane</option>
+                </select>
+            </td>
+            <td>
+                <input class="activator" type="checkbox"/>
+            </td>
+        </tr>
+        {{/each}}
+    </table>
+</script>
