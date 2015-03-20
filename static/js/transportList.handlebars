@@ -1,6 +1,7 @@
 <script type="x-handlebars-template" id="list_tempate">
     <table id="transport_table">
-        <tr>
+        <tr id="heading">
+            <th>Num</th>
             <th>Start Date</th>
             <th>Start Time</th>
             <th>End Time</th>
@@ -10,6 +11,7 @@
         </tr>
         {{#each transports}}
         <tr class="transport" id={{ this.id }}>
+            <td>{{ this.num }}</td>
             <td>{{ this.date }}</td>
             <td>{{ this.start }}</td>
             <td>{{ this.end }}</td>
@@ -18,11 +20,14 @@
             <td>
                 <select class="type">
                     <option value=""></option>
+                    <option value="airplane">Airplane</option>
                     <option value="bike">Bike</option>
+                    <option value="boat">Boat</option>
+                    <option value="bus">Bus</option>
+                    <option value="car">Car</option>
+                    <option value="scooter">Scooter</option>
                     <option value="subway">Subway</option>
                     <option value="train">Train</option>
-                    <option value="car">Car</option>
-                    <option value="airplane">Airplane</option>
                 </select>
             </td>
             <td>

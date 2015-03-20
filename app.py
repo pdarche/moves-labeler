@@ -24,10 +24,11 @@ def format_transport(trans):
     }
 
 
-def format_date(trans):
+def format_date(trans, ix):
     trans['date'] = trans['start'].strftime("%A, %b %d '%y")
     trans['start'] = trans['start'].strftime("%I:%M %p")
     trans['end'] = trans['end'].strftime("%I:%M %p")
+    trans['num'] = ix
 
     return trans
 
@@ -42,7 +43,7 @@ def transports():
     raw_transports = db.moves_transport.find()
     transports = [format_transport(transport) for transport in raw_transports]
     transports = sorted(transports, key=lambda k: k['end'], reverse=True)
-    transports = [format_date(transport) for transport in transports]
+    transports = [format_date(transport, ix) for ix, transport in enumerate(transports)]
 
     return json.dumps(transports)
 
