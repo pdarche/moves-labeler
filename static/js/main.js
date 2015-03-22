@@ -26,18 +26,18 @@ $(document).ready(function(){
     collection: mapTransports
   });
 
-  var transportList = new TransportListView({
-    el: '#transport_list',
-    collection: transports
-  });
+  // var transportList = new TransportListView({
+  //   el: '#transport_list',
+  //   collection: transports
+  // });
 
-  vent.on('addModel', function(id){
-    mapTransports.add(transports.byId(id));
-  });
+  // vent.on('addModel', function(id){
+  //   mapTransports.add(transports.byId(id));
+  // });
 
-  vent.on('removeModel', function(id){
-    mapTransports.remove(transports.byId(id));
-  });
+  // vent.on('removeModel', function(id){
+  //   mapTransports.remove(transports.byId(id));
+  // });
 
 });
 
