@@ -14,6 +14,7 @@ db = client.phronesis_dev
 def format_transport(trans):
     return {
         'id': str(trans['_id']),
+        'hash': str(trans['_id'])[-5:],
         'date': dateutil.parser.parse(trans['startTime']),
         'start': dateutil.parser.parse(trans['startTime']),
         'end': dateutil.parser.parse(trans['endTime']),
@@ -72,3 +73,4 @@ def transport():
 
 if __name__ == '__main__':
     app.run()
+
