@@ -1,42 +1,17 @@
-var App = React.createClass({
-  getInitialState: function() {
-    return {
-      transports: []
-    };
-  },
 
-  componentDidMount: function() {
-    $.getJSON('/transports', function(data) {
-      var transports = result[0];
-      if (this.isMounted()) {
-        this.setState({
-          transports: transports
-        });
-      }
-    }.bind(this));
-  },
-
-  render: function() {
-
-  }
-});
-
-
-var Livemap = React.createClass({
+var Map = React.createClass({
     componentDidMount: function() {
-      var map = this.map = L.map(this.getDOMNode(), {
-          minZoom: 2,
-          maxZoom: 20,
-          layers: [
-              L.tileLayer(
-                  'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  {attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'})
-          ],
-          attributionControl: false,
+      var map = L.map('map', {
+        center: [40.7146, -74],
+        zoom: 12
       });
 
+      L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18
+      }).addTo(map);
+
       map.on('click', this.onMapClick);
-      map.fitWorld();
     },
     componentWillUnmount: function() {
         this.map.off('click', this.onMapClick);
@@ -47,7 +22,7 @@ var Livemap = React.createClass({
     },
     render: function() {
         return (
-            <div id="map" className='map'></div>
+            <div id="map" className='item'></div>
         );
     }
 });
@@ -122,24 +97,8 @@ var Transport = React.createClass({
 var TransportTable = React.createClass({
   getInitialState: function() {
     return {
-      transports: [],
       isChecked: false
     };
-  },
-
-  componentDidMount: function() {
-    $.getJSON('/transports', function(data) {
-      var transports = data.map(function(datum) {
-        datum.isChecked = false;
-        return datum
-      });
-
-      if (this.isMounted()) {
-        this.setState({
-          transports: transports
-        });
-      }
-    }.bind(this));
   },
 
   handleChangeCallback: function(transport) {
@@ -158,7 +117,7 @@ var TransportTable = React.createClass({
   },
 
   render: function() {
-    var transports = this.state.transports.map(function(trans) {
+    var transports = this.props.transports.map(function(trans) {
       return <Transport
               num={trans.num}
               date={trans.date}
@@ -172,28 +131,63 @@ var TransportTable = React.createClass({
     }.bind(this));
 
     return (
-        <table>
-          <tr>
-            <th>Index</th>
-            <th>Date</th>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Distance</th>
-            <th>Duration</th>
-            <th>Type</th>
-            <th>
-              <input type="checkbox" onChange={this.toggleActive} checked={this.state.isChecked} />
-            </th>
-          </tr>
-          {transports}
-        </table>
+        <div id="transport_list">
+          <table>
+            <tr>
+              <th>Index</th>
+              <th>Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+              <th>Distance</th>
+              <th>Duration</th>
+              <th>Type</th>
+              <th>
+                <input type="checkbox" onChange={this.toggleActive} checked={this.state.isChecked} />
+              </th>
+            </tr>
+            {transports}
+          </table>
+        </div>
     );
   }
-})
+});
+
+var App = React.createClass({
+  getInitialState: function() {
+    return {
+      transports: [],
+      activeTransports: []
+    };
+  },
+
+  componentDidMount: function() {
+    $.getJSON('/transports', function(data) {
+      var transports = data.map(function(datum) {
+        datum.isChecked = false;
+        return datum
+      });
+
+      if (this.isMounted()) {
+        this.setState({
+          transports: transports
+        });
+      }
+    }.bind(this));
+  },
+
+  render: function() {
+    return(
+        <div id="container">
+          <Map activeTransports={this.state.activeTransports}/>
+          <TransportTable transports={this.state.transports}/>
+        </div>
+    );
+  }
+});
 
 
 React.render(
-  <TransportTable/>,
-  document.getElementById('transport_list')
+  <App/>,
+  document.getElementById('app')
 );
 

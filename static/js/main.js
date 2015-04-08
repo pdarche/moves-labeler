@@ -19,12 +19,12 @@ $(document).ready(function(){
   transports = new TransportCollection();
   mapTransports = new Backbone.Collection();
 
-  transports.fetch();
+  // transports.fetch();
 
-  var mapView = new MapView({
-    el: '#map',
-    collection: mapTransports
-  });
+  // var mapView = new MapView({
+  //   el: '#map',
+  //   collection: mapTransports
+  // });
 
   // var transportList = new TransportListView({
   //   el: '#transport_list',
