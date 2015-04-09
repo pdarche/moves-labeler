@@ -1,4 +1,3 @@
-
 var Map = React.createClass({
     componentDidMount: function() {
       var map = L.map('map', {
@@ -14,16 +13,16 @@ var Map = React.createClass({
       map.on('click', this.onMapClick);
     },
     componentWillUnmount: function() {
-        this.map.off('click', this.onMapClick);
-        this.map = null;
+      this.map.off('click', this.onMapClick);
+      this.map = null;
     },
     onMapClick: function() {
         // Do some wonderful map things...
     },
     render: function() {
-        return (
-            <div id="map" className='item'></div>
-        );
+      return (
+          <div id="map" className='item'></div>
+      );
     }
 });
 
@@ -38,7 +37,13 @@ var Transport = React.createClass({
   },
 
   handleChange: function(ev) {
-    this.props.onChange(this);
+    console.log(this.state.isChecked)
+    this.setState({
+      isChecked: !this.state.isChecked,
+      isHighlighted: !this.state.isChecked
+    });
+    console.log(this.state.isChecked)
+    this.props.onChange(this.props.num, this.state.isChecked);
   },
 
   toggleActive: function(ev) {
@@ -87,7 +92,7 @@ var Transport = React.createClass({
             </select>
         </td>
         <td>
-          <input type="checkbox" onChange={this.toggleActive} checked={this.state.isChecked || this.props.isChecked}/>
+          <input type="checkbox" onChange={this.handleChange} checked={this.state.isChecked || this.props.isChecked}/>
         </td>
       </tr>
     );
@@ -106,14 +111,8 @@ var TransportTable = React.createClass({
   },
 
   toggleActive: function(ev) {
-    var isChecked = !this.state.isChecked;
-    this.setState({
-      isChecked: isChecked,
-      transports: this.state.transports.map(function(trans){
-        trans.isChecked = isChecked
-        return trans
-      })
-    });
+    var isChecked = !this.props.isChecked;
+    this.props.onToggleAll(this.props.num, isChecked);
   },
 
   render: function() {
@@ -127,7 +126,7 @@ var TransportTable = React.createClass({
               duration={trans.duration}
               type={trans.type}
               isChecked={trans.isChecked}
-              onChange={this.handleChangeCallback}/>;
+              onChange={this.props.handleToggle}/>;
     }.bind(this));
 
     return (
@@ -142,7 +141,7 @@ var TransportTable = React.createClass({
               <th>Duration</th>
               <th>Type</th>
               <th>
-                <input type="checkbox" onChange={this.toggleActive} checked={this.state.isChecked} />
+                <input type="checkbox" onChange={this.toggleActive} checked={this.props.isChecked} />
               </th>
             </tr>
             {transports}
@@ -156,7 +155,8 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       transports: [],
-      activeTransports: []
+      activeTransports: [],
+      isChecked: false
     };
   },
 
@@ -175,12 +175,52 @@ var App = React.createClass({
     }.bind(this));
   },
 
+  handleToggle: function(num, checkState) {
+    var transport, transports;
+
+    if (!checkState) {
+      transport = this.state.transports.filter(function(trans){
+        return trans.num == num;
+      });
+
+      this.setState({
+        activeTransports: this.state.activeTransports.concat(transport)
+      });
+
+    } else {
+      transports = this.state.activeTransports.filter(function(trans){
+        return trans.num != num;
+      });
+
+      this.setState({
+        activeTransports: transports
+      });
+
+    }
+  },
+
+  handleToggleAll: function(isChecked) {
+    this.state.transports.map(function(trans){
+      trans.isChecked = isChecked;
+      return trans
+    });
+
+    this.setState({
+      isChecked: isChecked,
+      transports: this.state.transports
+    });
+  },
+
   render: function() {
     return(
-        <div id="container">
-          <Map activeTransports={this.state.activeTransports}/>
-          <TransportTable transports={this.state.transports}/>
-        </div>
+      <div id="container">
+        <Map activeTransports={this.state.activeTransports}/>
+        <TransportTable
+          transports={this.state.transports}
+          isChecked={this.state.isChecked}
+          onToggleAll={this.handleToggleAll}
+          handleToggle={this.handleToggle}/>
+      </div>
     );
   }
 });

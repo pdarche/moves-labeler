@@ -1,23 +1,23 @@
-var TransportModel = Backbone.Model.extend({
-  url: '/transport'
-});
+// var TransportModel = Backbone.Model.extend({
+//   url: '/transport'
+// });
 
-var TransportCollection = Backbone.Collection.extend({
-  url: '/transports',
-  model: TransportModel,
-  byId: function(id) {
-      filtered = this.filter(function(model) {
-        return model.get("id") === id;
-        });
+// var TransportCollection = Backbone.Collection.extend({
+//   url: '/transports',
+//   model: TransportModel,
+//   byId: function(id) {
+//       filtered = this.filter(function(model) {
+//         return model.get("id") === id;
+//         });
 
-      return filtered[0]
-    }
-});
+//       return filtered[0]
+//     }
+// });
 
 $(document).ready(function(){
-  vent = _.extend({}, Backbone.Events);
-  transports = new TransportCollection();
-  mapTransports = new Backbone.Collection();
+  // vent = _.extend({}, Backbone.Events);
+  // transports = new TransportCollection();
+  // mapTransports = new Backbone.Collection();
 
   // transports.fetch();
 
