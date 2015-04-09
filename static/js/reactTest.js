@@ -1,6 +1,8 @@
 var Map = React.createClass({
     componentDidMount: function() {
-      var map = L.map('map', {
+      var map, lines, self = this;
+
+      map = L.map('map', {
         center: [40.7146, -74],
         zoom: 12
       });
@@ -9,6 +11,14 @@ var Map = React.createClass({
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18
       }).addTo(map);
+
+      lines = this.createPolyLines(points)
+      , self = this;
+
+    this.clearMap();
+    lines.forEach(function(line){
+      line.addTo(self.map)
+    });
 
       map.on('click', this.onMapClick);
     },
