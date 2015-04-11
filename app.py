@@ -40,7 +40,7 @@ def hello_world():
 
 @app.route('/transports')
 def transports():
-    raw_transports = db.moves_transport.find().limit(10)
+    raw_transports = db.moves_transport.find().limit(100)
     transports = [format_transport(transport) for transport in raw_transports]
     transports = sorted(transports, key=lambda k: k['end'], reverse=True)
     transports = [format_date(transport, ix) for ix, transport in enumerate(transports)]
