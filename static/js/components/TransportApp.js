@@ -2,12 +2,17 @@ var Map = require('./Map');
 var TransportTable = require('./TransportTable');
 
 var TransportApp = React.createClass({
+
   getInitialState: function() {
     return {
       transports: [],
       activeTransports: [],
       isChecked: false
     };
+  },
+
+  componentWillMount: function() {
+
   },
 
   componentDidMount: function() {
@@ -45,7 +50,6 @@ var TransportApp = React.createClass({
       this.setState({
         activeTransports: transports
       });
-
     }
   },
 
@@ -74,6 +78,10 @@ var TransportApp = React.createClass({
           handleToggle={this.handleToggle}/>
       </div>
     );
+  },
+
+  _onChange: function(){
+
   }
 });
 

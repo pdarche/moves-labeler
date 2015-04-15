@@ -1,6 +1,7 @@
 var Transport = require('./Transport');
 
 var TransportTable = React.createClass({
+
   getInitialState: function() {
     return {
       isChecked: false
