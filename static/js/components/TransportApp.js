@@ -1,68 +1,34 @@
 var Map = require('./Map');
 var TransportTable = require('./TransportTable');
+var AppActions = require('../actions/AppActions');
+var AppStore = require('../stores/AppStore');
+
+function allTransports() {
+  return AppStore.getAllTransports();
+}
+
+function activeTransports() {
+ return AppStore.getAllActive();
+}
 
 var TransportApp = React.createClass({
-
   getInitialState: function() {
     return {
       transports: [],
-      activeTransports: [],
-      isChecked: false
+      activeTransports: []
     };
   },
 
   componentWillMount: function() {
-
+    AppActions.populateTransports();
   },
 
   componentDidMount: function() {
-    $.getJSON('/transports', function(data) {
-      var transports = data.map(function(datum) {
-        datum.isChecked = false;
-        return datum
-      });
-
-      if (this.isMounted()) {
-        this.setState({
-          transports: transports
-        });
-      }
-    }.bind(this));
+    AppStore.addChangeListener(this._onChange);
   },
 
-  handleToggle: function(num, checkState) {
-    var transport, transports;
-
-    if (!checkState) {
-      transport = this.state.transports.filter(function(trans){
-        return trans.num == num;
-      });
-
-      this.setState({
-        activeTransports: this.state.activeTransports.concat(transport)
-      });
-
-    } else {
-      transports = this.state.activeTransports.filter(function(trans){
-        return trans.num != num;
-      });
-
-      this.setState({
-        activeTransports: transports
-      });
-    }
-  },
-
-  handleToggleAll: function(isChecked) {
-    this.state.transports.map(function(trans){
-      trans.isChecked = isChecked;
-      return trans
-    });
-
-    this.setState({
-      isChecked: isChecked,
-      transports: this.state.transports
-    });
+  componentWillUnmount: function() {
+    AppStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
@@ -72,16 +38,16 @@ var TransportApp = React.createClass({
           <Map activeTransports={this.state.activeTransports}/>
         </div>
         <TransportTable
-          transports={this.state.transports}
-          isChecked={this.state.isChecked}
-          onToggleAll={this.handleToggleAll}
-          handleToggle={this.handleToggle}/>
+          transports={this.state.transports}/>
       </div>
     );
   },
 
   _onChange: function(){
-
+    this.setState({
+      activeTransports: activeTransports(),
+      transports: allTransports()
+    });
   }
 });
 

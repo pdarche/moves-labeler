@@ -4,22 +4,24 @@ var TransportTable = React.createClass({
 
   getInitialState: function() {
     return {
-      isChecked: false
+      checked: false
     };
   },
 
   toggleAll: function() {
-    this.props.onToggleAll();
+    // AppActions.toggleAll()
+    this.setState({checked: !this.state.checked});
   },
 
   toggleActive: function(ev) {
-    var isChecked = !this.props.isChecked;
-    this.props.onToggleAll(this.props.num, isChecked);
+    var checked = !this.props.checked;
+    this.props.onToggleAll(this.props.num, checked);
   },
 
   render: function() {
     var transports = this.props.transports.map(function(trans) {
       return <Transport
+              id={trans.id}
               num={trans.num}
               date={trans.date}
               start={trans.start}
@@ -27,8 +29,7 @@ var TransportTable = React.createClass({
               distance={trans.distance}
               duration={trans.duration}
               type={trans.type}
-              isChecked={trans.isChecked}
-              onChange={this.props.handleToggle}/>;
+              checked={trans.checked}/>;
     }.bind(this));
 
     return (
@@ -43,7 +44,7 @@ var TransportTable = React.createClass({
               <th>Duration</th>
               <th>Type</th>
               <th>
-                <input type="checkbox" onChange={this.toggleAll} checked={this.props.isChecked} />
+                <input type="checkbox" onChange={this.toggleAll} checked={this.state.checked} />
               </th>
             </tr>
             {transports}

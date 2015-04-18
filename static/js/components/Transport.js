@@ -1,42 +1,41 @@
+var AppActions = require('../actions/AppActions');
+
 var Transport = React.createClass({
   getInitialState: function() {
     return {
       type: this.props.type,
-      isChecked: false,
-      isHighlighted: false
+      checked: this.props.checked || false,
+      highlighted: false
     };
   },
 
-  handleChange: function(ev) {
-    this.setState({
-      isChecked: !this.state.isChecked,
-      isHighlighted: !this.state.isChecked
-    });
-
-    this.props.onChange(this.props.num, this.state.isChecked);
+  handleTypeChange: function(ev) {
+    AppActions.updateTransportType(this.props.id, ev.target.value);
   },
 
-  toggleActive: function(ev) {
-    this.setState({
-      isChecked: !this.state.isChecked,
-      isHighlighted: !this.state.isChecked
-    });
+  handleActiveChange: function() {
+    if (!this.state.checked) {
+      AppActions.addTransport(this.props.num);
+    } else {
+      AppActions.removeTransport(this.props.num);
+    }
+    this.setState({checked: !this.state.checked})
   },
 
   onMouseOver: function(ev) {
-    this.setState({isHighlighted: true});
+    this.setState({highlighted: true});
   },
 
   onMouseOut: function(ev) {
-    if (!this.state.isChecked){
-      this.setState({isHighlighted: false});
+    if (!this.state.checked){
+      this.setState({highlighted: false});
     }
   },
 
   render: function() {
     var classString = "transport"
 
-    if (this.state.isHighlighted || this.props.isChecked) {
+    if (this.state.highlighted || this.state.checked) {
       classString += " active"
     }
 
@@ -49,7 +48,7 @@ var Transport = React.createClass({
         <td>{this.props.distance}</td>
         <td>{this.props.duration}</td>
         <td>
-            <select value={this.props.type} onChange={this.handleChange}>
+            <select value={this.props.type} onChange={this.handleTypeChange}>
                 <option value=""></option>
                 <option value="airplane">Airplane</option>
                 <option value="bike">Bike</option>
@@ -62,7 +61,9 @@ var Transport = React.createClass({
             </select>
         </td>
         <td>
-          <input type="checkbox" onChange={this.handleChange} checked={this.state.isChecked || this.props.isChecked}/>
+          <form>
+            <input type="checkbox" onChange={this.handleActiveChange} checked={this.props.checked || this.state.checked}/>
+          </form>
         </td>
       </tr>
     );

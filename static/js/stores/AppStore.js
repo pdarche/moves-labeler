@@ -1,3 +1,4 @@
+var AppActions = require('../actions/AppActions')
 var AppDispatcher = require('../dispatchers/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 var assign = require('object-assign');
@@ -9,36 +10,62 @@ var _transports = [];
 var _activeTransports = [];
 
 function populateTransports() {
-  $.getJSON('/transports', function(data) {
-    _transports = data.map(function(datum) {
-      datum.isChecked = false;
-      return datum
+  $.getJSON('/transports')
+    .done(function(data) {
+      _transports = data;
+      AppActions.handlePopulateSuccess(data);
+    })
+    .fail(function(err){
+      AppActions.handlePopulateError(err);
     });
-  });
 }
 
-function addTransport(transport) {
-  _activeTransports.push(transport);
+function addTransport(num) {
+  _activeTransports.push(_transports[num]);
 }
 
-function removeTransport(transport) {
+function removeTransport(num) {
   _activeTransports = _activeTransports.filter(function(trans){
     return trans.num != num;
   });
 }
 
-function updateTransportType(type) {
-  console.log('I should be updating to', type);
+function updateTransportType(id, type) {
+  var data, transport;
+
+  transport = _.where(_transports, {id:id});
+  transport[0].type = type;
+  data = JSON.stringify({id: id, type: type});
+
+  $.ajax({
+    url:'/transport',
+    method: 'PUT',
+    data: data
+  })
+  .done(function(){
+    AppActions.handlePopulateSuccess(data);
+  })
+  .fail(function(){
+    AppActions.handlePopulateError(err);
+  });
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 
   /**
-   * Get the entire collection of transports.
-   * @return {object}
+   * Get the entire collection of active transports.
+   * @return {array}
    */
-  getAll: function() {
+  getAllActive: function() {
     return _activeTransports;
+  },
+
+  /**
+   * Get the entire collection of transports.
+   * @return {array}
+   */
+  getAllTransports: function() {
+    return _transports;
   },
 
   emitChange: function() {
@@ -64,18 +91,30 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
     switch(action.actionType) {
       case AppConstants.ADD_TRANSPORT:
-        addTransport(payload.transport);
+        addTransport(action.transport);
         AppStore.emitChange();
         break;
 
       case AppConstants.REMOVE_TRANSPORT:
-        removeTransport(payload.transport);
+        removeTransport(action.transport);
         AppStore.emitChange();
         break;
 
-
       case AppConstants.UPDATE_TRANSPORT_TYPE:
-        updateTransportType(payload.type);
+        updateTransportType(action.id, action.type);
+        AppStore.emitChange();
+        break;
+
+      case AppConstants.POPULATE_TRANSPORTS:
+        populateTransports();
+        AppStore.emitChange();
+        break;
+
+      case AppConstants.POPULATION_SUCCESS:
+        AppStore.emitChange();
+        break;
+
+      case AppConstants.POPULATION_ERROR:
         AppStore.emitChange();
         break;
     }

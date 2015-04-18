@@ -26,12 +26,42 @@ var AppActions = {
   /**
    * @param  {string} type
    */
-  updateTransportType: function(type){
+  updateTransportType: function(id, type){
     AppDispatcher.handleViewAction({
       actionType: AppConstants.UPDATE_TRANSPORT_TYPE,
+      id: id,
       type: type
     });
-  }
+  },
+
+  /**
+   * @param  {string} type
+   */
+  populateTransports: function() {
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.POPULATE_TRANSPORTS
+    });
+  },
+
+  /**
+   * @param  {string} type
+   */
+  handlePopulateSuccess: function(data) {
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.POPULATION_SUCCESS,
+      data: data
+    })
+  },
+
+  /**
+   * @param  {string} type
+   */
+  handlePopulateError: function(data) {
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.POPULATION_ERROR,
+      error: error
+    })
+  },
 };
 
 module.exports = AppActions;
