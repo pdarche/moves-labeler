@@ -1,5 +1,11 @@
-var MapView = Backbone.View.extend({
-  initialize: function() {
+var Map = React.createClass({
+  getInitialState: function() {
+    return {
+      mounted: false
+    }
+  },
+
+  componentDidMount: function() {
     this.map = L.map('map', {
       center: [40.7146, -74],
       zoom: 12
@@ -10,23 +16,33 @@ var MapView = Backbone.View.extend({
       maxZoom: 18
     }).addTo(this.map);
 
-    this.collection.bind('add', $.proxy(this.render, this));
-    this.collection.bind('remove', $.proxy(this.render, this));
+    this.map.on('click', this.onMapClick);
+    this.setState({mounted:true})
   },
 
-  render: function() {
-    var points = this.collection.pluck('trackPoints')
-      , lines = this.createPolyLines(points)
-      , self = this;
+  updatePoints: function() {
+    var lines, points, self = this;
+
+    points = this.props.activeTransports.map(function(trans){
+      return trans.trackPoints
+    });
+
+    lines = this.createPolyLines(points);
 
     this.clearMap();
+
     lines.forEach(function(line){
       line.addTo(self.map)
     });
+
   },
 
-  createPoint: function(trackpoint) {
-    return new L.LatLng(trackpoint['lat'], trackpoint['lon']);
+  createPolyLines: function(pointsArray) {
+    var self = this;
+
+    return pointsArray.map(function(trackpoints){
+      return self.createPolyLine(trackpoints);
+    });
   },
 
   createPolyLine: function(trackpoints) {
@@ -43,12 +59,8 @@ var MapView = Backbone.View.extend({
     return line
   },
 
-  createPolyLines: function(pointsArray) {
-    var self = this;
-
-    return pointsArray.map(function(trackpoints){
-      return self.createPolyLine(trackpoints);
-    });
+  createPoint: function(trackpoint) {
+    return new L.LatLng(trackpoint['lat'], trackpoint['lon']);
   },
 
   clearMap: function() {
@@ -62,5 +74,23 @@ var MapView = Backbone.View.extend({
         }
       }
     }
+  },
+
+  componentWillUnmount: function() {
+    this.map.off('click', this.onMapClick);
+    this.map = null;
+  },
+
+  onMapClick: function() {
+      // Do some wonderful map things...
+  },
+
+  render: function() {
+    if (this.state.mounted) this.updatePoints();
+    return (
+        <div id="map" className='item'></div>
+    );
   }
 });
+
+module.exports = Map;

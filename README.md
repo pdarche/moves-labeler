@@ -1,2 +1,2 @@
 # moves-labeler
-Small Flask/Backbone app to label moves data
+Small Flask/React/Flux app to label moves data

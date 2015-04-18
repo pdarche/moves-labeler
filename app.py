@@ -41,7 +41,7 @@ def hello_world():
 
 @app.route('/transports')
 def transports():
-    raw_transports = db.moves_transport.find()
+    raw_transports = db.moves_transport.find().limit(200)
     transports = [format_transport(transport) for transport in raw_transports]
     transports = sorted(transports, key=lambda k: k['end'], reverse=True)
     transports = [format_date(transport, ix) for ix, transport in enumerate(transports)]
@@ -63,6 +63,7 @@ def transport():
         return json.dumps(transport_doc)
 
     else:
+        print "THE INCOMING DATA IS %r" % request.data
         data = json.loads(request.data)
         res = db.moves_transport.update(
                 {'_id': bson.objectid.ObjectId(data['id'])},

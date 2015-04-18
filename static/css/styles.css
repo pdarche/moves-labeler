@@ -15,17 +15,17 @@ body {
 .item {
     height: 100%;
     margin: 0px;
-    flex-grow: 1;
+    flex-grow: .5;
 }
 
 #map {
-    width: 39%;
+    width: 30%;
 }
 
 #transport_list {
     overflow-y: scroll;
     padding: 2px;
-    width: 45%;
+    width: 52%;
 }
 
 #transport_list td {
