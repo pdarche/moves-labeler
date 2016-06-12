@@ -3,12 +3,14 @@ import pymongo
 import dateutil.parser
 import json
 import bson
+import pickle
+
 
 app = Flask(__name__)
 app.config.from_object('config')
 
 client = pymongo.MongoClient('localhost', 27017)
-db = client.phronesis_dev
+db = client.carbon_calculator
 
 
 def format_transport(trans):
@@ -20,6 +22,7 @@ def format_transport(trans):
         'end': dateutil.parser.parse(trans['endTime']),
         'duration': "%.2f" % (float(trans['duration']) / 60),
         'distance': trans['distance'],
+        'pred': trans['pred'],
         'type': trans['type'],
         'trackPoints': trans['trackPoints']
     }
@@ -41,9 +44,14 @@ def hello_world():
 
 @app.route('/transports')
 def transports():
-    raw_transports = db.moves_transport.find().limit(200)
+    ids = pickle.load(open('./misclassified.p', 'rb'))
+    print ids
+    # raw_transports = db.moves_transport.find({'_id': {'$in': ids}})
+    # raw_transports = db.moves_transport.find({'type': None, '_id': {'$in': [bson.ObjectId(id_) for id_ in ids]}}) #.sort('duration', -1).skip(800).limit(200)
+    # raw_transports = db.moves_transport.find({'$and': [{'type': None}, {'distance': {'$lt': 4500}}, {'distance': {'$gte': 3000}}]}).sort('distance', -1).limit(500)
+    raw_transports = db.moves_transport.find({'pred': 'car'})
     transports = [format_transport(transport) for transport in raw_transports]
-    transports = sorted(transports, key=lambda k: k['end'], reverse=True)
+    transports = sorted(transports, key=lambda k: k['distance'], reverse=True)
     transports = [format_date(transport, ix) for ix, transport in enumerate(transports)]
 
     return json.dumps(transports)

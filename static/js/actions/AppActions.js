@@ -44,13 +44,24 @@ var AppActions = {
   },
 
   /**
+   * @param  {string} key
+   */
+  sortTransports: function(key, direction) {
+    AppDispatcher.handleViewAction({
+      actionType: AppConstants.SORT_TRANSPORTS,
+      key: key,
+      direction: direction
+    });
+  },
+
+  /**
    * @param  {string} type
    */
   handlePopulateSuccess: function(data) {
     AppDispatcher.handleViewAction({
       actionType: AppConstants.POPULATION_SUCCESS,
       data: data
-    })
+    });
   },
 
   /**
@@ -60,8 +71,9 @@ var AppActions = {
     AppDispatcher.handleViewAction({
       actionType: AppConstants.POPULATION_ERROR,
       error: error
-    })
-  },
+    });
+  }
 };
 
 module.exports = AppActions;
+

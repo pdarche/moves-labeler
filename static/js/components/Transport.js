@@ -13,6 +13,12 @@ var Transport = React.createClass({
     AppActions.updateTransportType(this.props.id, ev.target.value);
   },
 
+  toggleActive: function(){
+    this.setState({
+      checked: !this.state.checked
+    });
+  },
+
   handleActiveChange: function() {
     if (!this.state.checked) {
       AppActions.addTransport(this.props.num);
@@ -40,13 +46,14 @@ var Transport = React.createClass({
     }
 
     return (
-      <tr className={classString} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut}>
-        <td>{this.props.num}</td>
+      <tr className={classString} onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.handleActiveChange}>
+        <td>{this.props.hash}</td>
         <td>{this.props.date}</td>
         <td>{this.props.start}</td>
         <td>{this.props.end}</td>
         <td>{this.props.distance}</td>
         <td>{this.props.duration}</td>
+        <td>{this.props.pred}</td>
         <td>
             <select value={this.props.type} onChange={this.handleTypeChange}>
                 <option value=""></option>
@@ -55,7 +62,6 @@ var Transport = React.createClass({
                 <option value="boat">Boat</option>
                 <option value="bus">Bus</option>
                 <option value="car">Car</option>
-                <option value="scooter">Scooter</option>
                 <option value="subway">Subway</option>
                 <option value="train">Train</option>
             </select>

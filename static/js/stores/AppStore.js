@@ -50,6 +50,10 @@ function updateTransportType(id, type) {
   });
 }
 
+function sortTransports(key, direction) {
+  console.log('they key and direction are', [key, direction]);
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 
   /**
@@ -109,6 +113,10 @@ var AppStore = assign({}, EventEmitter.prototype, {
         populateTransports();
         AppStore.emitChange();
         break;
+
+      case AppConstants.SORT_TRANSPORTS:
+        sortTransports(action.key, action.direction);
+        AppStore.emitChange();
 
       case AppConstants.POPULATION_SUCCESS:
         AppStore.emitChange();
